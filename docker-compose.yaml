@@ -8,3 +8,12 @@ services:
       - "80:10010"
     volumes:
       - ./components/soundcloud-downloader/config.json:/app/configs/config.json
+  soundcloud-downloader-request:
+    image: alpine:3.9
+    command: >
+      /bin/sh -c "
+        apk add --no-cache curl
+        echo 'submitting request'
+        curl --request POST http://soundcloud-downloader:10010/submit"
+        
+ 
