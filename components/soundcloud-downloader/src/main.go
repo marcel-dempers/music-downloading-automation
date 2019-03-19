@@ -5,17 +5,20 @@ import (
 	"net/http"
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
+	"fmt"
 )
 func main() {
 	config := GetConfiguration()
 	router := httprouter.New()
 
-	router.POST("/deploy/:environment/:namespace/:servicename/:dockerimagetag", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
-		err := Deploy(w,r,p,config.Environments)
+	router.POST("/submit", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
+		
+		fmt.Print(config)
+		//err := Deploy(w,r,p,config.Environments)
 
-		if(err != nil){
-			http.Error(w, err.Error(), 500)
-		}
+		// if(err != nil){
+		// 	http.Error(w, err.Error(), 500)
+		// }
 	})
 
 	fmt.Println("Running...")
