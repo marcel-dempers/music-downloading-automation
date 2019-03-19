@@ -2,6 +2,10 @@ package main
 
 import (
 	"app/models"
+	"fmt"
+	"os"
+	"io/ioutil"
+	"encoding/json"
 )
 
 func GetConfiguration() models.Configuration{

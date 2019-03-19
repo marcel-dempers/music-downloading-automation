@@ -1,24 +1,13 @@
 package models
-type Route struct {
+type Test struct {
 	Name string
 }
 
 type Configuration struct {
-	Routes []Route
-	Environments Environments
+	TestCollection []Test
+	AnotherTestItem AnotherTest
 }
 
-type Environments struct {
-    Prod Environment
-	Dev Environment
-	ContainerRegistryUrl string
-	ContainerRepository string
-}
-
-type Environment struct {
-	Clusters []Cluster
-}
-
-type Cluster struct {
-    Name string
+type AnotherTest struct {
+	test string
 }
