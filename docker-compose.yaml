@@ -1,0 +1,10 @@
+version: "3"
+services:
+  soundcloud-downloader:
+    container_name: soundcloud-downloader
+    image: aimvector/soundcloud-downloader:0.0.1
+    build: ./components/soundcloud-downloader
+    ports:
+      - "80:10010"
+    volumes:
+      - ./components/soundcloud-downloader/config.json:/app/configs/config.json
