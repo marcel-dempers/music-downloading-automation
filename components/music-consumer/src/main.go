@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"time"
 	"app/models"
+	"encoding/json"
+	 
 )
 
 func failOnErrorRetry(err error, msg string) {
@@ -83,7 +85,18 @@ func main() {
 		
 			  go func() {
 				for d := range msgs {
-				  log.Printf("Received a message: %s", d.Body)
+					log.Printf("Received a message: %s", d.Body)
+					message := models.Message{}
+					//msgString := bytes.NewBuffer(d.Body).String()
+					//err := json.NewDecoder(msgString).Decode(&message)
+
+					if err := json.Unmarshal(d.Body, &message); err != nil {
+						panic(err)
+					}
+					err = ProcessMessage(message)
+					if err != nil {
+						panic(err)
+					}
 				}
 			  }()
 			  

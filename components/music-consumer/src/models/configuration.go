@@ -1,10 +1,10 @@
 package models
-type Test struct {
-	Name string
+type Download struct {
+	OutputPath string
 }
 
 type Configuration struct {
-	TestCollection []Test
+	Download Download
 	RabbitMq RabbitMq
 }
 

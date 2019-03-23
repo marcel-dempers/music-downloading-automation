@@ -20,6 +20,7 @@ FROM python:3.6.8-alpine3.9
 COPY --from=build /usr/local/bin/youtube-dl /usr/local/bin/youtube-dl
 RUN chmod a+rx /usr/local/bin/youtube-dl
 
+RUN touch /etc/youtube-dl.conf && echo '-o /data/%(title)s.%(ext)s' >> /etc/youtube-dl.conf
 RUN mkdir -p /app
 COPY --from=build /go/src/app/app /app/
 WORKDIR /app

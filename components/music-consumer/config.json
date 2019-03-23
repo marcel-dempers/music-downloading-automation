@@ -1,9 +1,7 @@
 {
-    "Test" : [
-        {
-            "Name" : "blah"
-        }
-    ],
+    "Download" : {
+        "OutputPath" : "/data"
+    },
 
     "RabbitMq" : {
         "Host" : "music-queue",

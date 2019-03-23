@@ -22,5 +22,6 @@ services:
     build: ./components/music-consumer
     volumes:
       - ./components/music-consumer/config.json:/app/configs/config.json
+      - ./components/music-consumer/data:/data
         
  
