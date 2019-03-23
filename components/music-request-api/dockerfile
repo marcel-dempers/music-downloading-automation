@@ -8,16 +8,14 @@ WORKDIR /go/src/app
 
 RUN go get github.com/julienschmidt/httprouter
 RUN go get github.com/sirupsen/logrus
+RUN go get github.com/streadway/amqp
 
 COPY ./src /go/src/app/
 
 RUN go build -o app
 ################################################################################################################
 
-FROM python:3.6.8-alpine3.9
-
-COPY --from=build /usr/local/bin/youtube-dl /usr/local/bin/youtube-dl
-RUN chmod a+rx /usr/local/bin/youtube-dl
+FROM alpine:3.9
 
 RUN mkdir -p /app
 COPY --from=build /go/src/app/app /app/

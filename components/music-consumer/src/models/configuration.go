@@ -5,9 +5,12 @@ type Test struct {
 
 type Configuration struct {
 	TestCollection []Test
-	AnotherTestItem AnotherTest
+	RabbitMq RabbitMq
 }
 
-type AnotherTest struct {
-	test string
+type RabbitMq struct {
+	Host string
+	Port int
+	Username string
+	Password string
 }

@@ -1,19 +1,26 @@
 version: "3"
 services:
-  soundcloud-downloader:
-    container_name: soundcloud-downloader
-    image: aimvector/soundcloud-downloader:0.0.1
-    build: ./components/soundcloud-downloader
+  music-queue:
+    container_name: music-queue
+    image: rabbitmq:3-management
+    environment:
+    - RABBITMQ_DEFAULT_USER=user
+    - RABBITMQ_DEFAULT_PASS=password
     ports:
-      - "80:10010"
+    - "15672:15672"
+  music-request-api:
+    container_name: music-request-api
+    image: aimvector/music-request-api:0.0.1 
+    build: ./components/music-request-api
+    ports:
+    - "80:10010"
     volumes:
-      - ./components/soundcloud-downloader/config.json:/app/configs/config.json
-  soundcloud-downloader-request:
-    image: alpine:3.9
-    command: >
-      /bin/sh -c "
-        apk add --no-cache curl
-        echo 'submitting request'
-        curl --request POST http://soundcloud-downloader:10010/submit"
+      - ./components/music-request-api/config.json:/app/configs/config.json
+  music-consumer:
+    container_name: music-consumer
+    image: aimvector/music-consumer:0.0.1
+    build: ./components/music-consumer
+    volumes:
+      - ./components/music-consumer/config.json:/app/configs/config.json
         
  

@@ -2,13 +2,20 @@ package main
 
 import (
 	"fmt"
-	"os/exec"
+	//"os/exec"
+	"net/http"
 	"app/models"
+	"github.com/julienschmidt/httprouter"
 )
 
-
-func SubmitRequest(writer http.ResponseWriter, request *http.Request, p httprouter.Params, models.Configuration) (err error) {
+func SubmitRequest(writer http.ResponseWriter, request *http.Request, p httprouter.Params, config models.Configuration) (err error) {
 	fmt.Println("Submitting request to queue")
+
+	if err != nil {
+		panic(err)
+	}
+
+	return err
 }
 // func (d Downloader) exec(args []string) (errr error) {
 // 	e:= Exe{}

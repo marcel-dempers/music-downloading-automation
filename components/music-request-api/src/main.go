@@ -6,15 +6,14 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"fmt"
-	"app/models"
+	//"app/models"
 )
 func main() {
 	config := GetConfiguration()
 	router := httprouter.New()
 
-	router.POST("/submit", func(w http.ResponseWriter, r *http.Request, p httprouter.Params, config models.Configuration){
-		fmt.Println("submit")
-		fmt.Print(config)
+	router.POST("/submit/*query", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
+		 
 		err := SubmitRequest(w,r,p,config)
 
 		if(err != nil){
