@@ -1,0 +1,2 @@
+This folder contains a data folder that is git ignored.
+It mounts into database container at /data 

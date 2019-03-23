@@ -73,7 +73,7 @@ func main() {
 			msgs, err := ch.Consume(
 				q.Name, // queue
 				"",     // consumer
-				true,   // auto-ack
+				false,   // auto-ack
 				false,  // exclusive
 				false,  // no-local
 				false,  // no-wait
@@ -87,9 +87,7 @@ func main() {
 				for d := range msgs {
 					log.Printf("Received a message: %s", d.Body)
 					message := models.Message{}
-					//msgString := bytes.NewBuffer(d.Body).String()
-					//err := json.NewDecoder(msgString).Decode(&message)
-
+					 
 					if err := json.Unmarshal(d.Body, &message); err != nil {
 						panic(err)
 					}
@@ -97,6 +95,8 @@ func main() {
 					if err != nil {
 						panic(err)
 					}
+
+					d.Ack(false)
 				}
 			  }()
 			  

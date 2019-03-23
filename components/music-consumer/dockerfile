@@ -9,6 +9,9 @@ WORKDIR /go/src/app
 RUN go get github.com/julienschmidt/httprouter
 RUN go get github.com/sirupsen/logrus
 RUN go get github.com/streadway/amqp
+RUN go get -u github.com/flimzy/kivik
+RUN go get -u github.com/go-kivik/couchdb
+RUN go get github.com/rs/xid
 
 COPY ./src /go/src/app/
 

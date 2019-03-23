@@ -7,6 +7,10 @@ import (
 	"time"
 	"errors"
 	"bytes"
+	"bufio"
+	"strings"
+	"regexp"
+	"io/ioutil"
 )
 
 func ProcessMessage(message models.Message) (err error) {
@@ -68,50 +72,44 @@ func (e Exe) exec(program string, args []string, timeoutInSec time.Duration) (er
 
 		if err != nil {
 			fmt.Println("Exe returned error after completion", err)
+			
 			println(outputbuf.String())
 			println(errbuf.String())
 			return errors.New(errbuf.String())
 		}
 	}
 
-	println(outputbuf.String())
+	//println(outputbuf.String())
+    
+	scanner := bufio.NewScanner(strings.NewReader(outputbuf.String()))
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fmt.Println(line)
 
+		if strings.Contains(line, "[download]") {
+			fmt.Println("Finding downloaded file")
+			re := regexp.MustCompile(`\w*\/[^.]+[.]\w{1,3}`)
+			filePath := re.FindAllString(line, -1)
+
+			if filePath == nil {
+				//problem getting the destination of downloaded file
+				return errors.New("Problem retrieve destination path from buffer")
+			}
+
+			fmt.Println("File saved to: " + filePath[0])
+
+			//attempt to store in couchdb
+			content, err := ioutil.ReadFile(filePath[0])
+			if err != nil {
+				return errors.New("Problem reading downloaded file")
+			}
+
+			ConnectAndSaveContent(filePath[0],content)
+
+
+		}
+    }
 	fmt.Println("Exe processing complete")
 	return nil
 }
-
-
-// func (e Exe) exec(yaml string, context string) (err error){
-// 	echo := exec.Command("echo", []string{yaml}...)
-
-// 	kubectl := exec.Command("kubectl", []string{"apply", "--context="+context, "-f", "-"}...)
-// 	echoOut, _ := echo.StdoutPipe()
-// 	echo.Start()
-// 	kubectl.Stdin = echoOut
-
-// 	var outputbuf bytes.Buffer
-//     kubectl.Stdout = &outputbuf
-
-// 	stderr, err := kubectl.StderrPipe()
-// 	if err != nil {
-// 		fmt.Println("kubeapply StderrPipe returning error")
-// 		return err
-// 	}
-
-// 	if err := kubectl.Start(); err != nil {
-// 		fmt.Println("kubeapply Start returning error")
-// 		return err
-// 	}
-
-// 	slurp, _ := ioutil.ReadAll(stderr)
-// 	fmt.Printf("%s\n", slurp)
-
-// 	if err := kubectl.Wait(); err != nil {
-// 		fmt.Println("kubeapply Wait returning error")
-// 		return errors.New(fmt.Sprintf("%s\n", slurp))
-// 	}
-
-// 	println(outputbuf.String())
-// 	fmt.Println("kubeapply returning...")
-// 	return nil
-// }
