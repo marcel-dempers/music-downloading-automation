@@ -1,0 +1,6 @@
+place holder so this folder gets checked in.
+This is the folder where /data will live.
+The application uses /data to write downloaded content temporarily to disk 
+before it goes to database
+
+/data in here is gitignored and will be created when platform starts

@@ -1,2 +1,3 @@
 This folder contains a data folder that is git ignored.
-It mounts into database container at /data 
+It mounts into database container at /data.
+This serves as CouchDB's persisted volume point
