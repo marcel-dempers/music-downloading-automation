@@ -9,6 +9,7 @@ import (
 	"github.com/rs/xid"
 	"bytes"
 	"io"
+	"app/models"
 )
 
 type ClosingBuffer struct { 
@@ -22,7 +23,7 @@ func (cb *ClosingBuffer) Close() (err error) {
 	return 
 } 
 
-func ConnectAndSaveContent(filename string, content []byte) {
+func ConnectAndSaveContent(document models.Document, content []byte, metadatafile []byte) {
 
 	//var timeout = time.Duration(500 * time.Millisecond)
 	//conn, err := couchdb.NewConnection("music-storage",5984,timeout)
@@ -38,24 +39,39 @@ func ConnectAndSaveContent(filename string, content []byte) {
  
 	id := xid.New()
 	reader := bytes.NewReader(content)
+	readerMeta := bytes.NewReader(metadatafile)
 	
 	doc := map[string]interface{}{
         "_id":      id.String(),
-        "filename":     filename,
+		"fileName":     document.FileName,
+		"localFilePath" : document.LocalFilePath,
+		"metadataFilePath" : document.MetadataFilePath,
+		"metadataFileName" : document.MetadataFileName,
 	}
 	
 	cb := &ClosingBuffer{reader}
-	var rc io.ReadCloser
-	rc = cb 
-	defer rc.Close()
-	attachment := &kivik.Attachment{Filename : filename, Content : rc, ContentType : "audio/mpeg" }
+	cbMeta := &ClosingBuffer{readerMeta}
 
+	var rc io.ReadCloser
+	var rcMeta io.ReadCloser
+	rc = cb
+	rcMeta = cbMeta 
+
+	defer rcMeta.Close()
+	defer rc.Close()
+
+	attachment := &kivik.Attachment{Filename : document.FileName, Content : rc, ContentType : "audio/mpeg" }
+	attachmentMeta := &kivik.Attachment{Filename : document.MetadataFileName, Content : rcMeta, ContentType : "application/json" }
 	rev, err := db.Put(context.TODO(), id.String(), doc)
     if err != nil {
         panic(err)
 	}
 
 	rev, err = db.PutAttachment(context.TODO(),id.String(), rev, attachment)
+	if err != nil {
+        panic(err)
+	}
+	rev, err = db.PutAttachment(context.TODO(),id.String(), rev, attachmentMeta)
 	if err != nil {
         panic(err)
 	}
