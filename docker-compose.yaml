@@ -5,8 +5,11 @@ services:
     image: apache/couchdb:2.1.0
     ports:
     - "5984:5984"
+    environment:
+    - COUCHDB_USER=user
+    - COUCHDB_PASSWORD=password
     volumes:
-      - ./components/music-storage/data:/opt/couchdb/data"
+      - ./components/music-storage/data:/opt/couchdb/data
   music-queue:
     container_name: music-queue
     image: rabbitmq:3-management
