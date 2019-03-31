@@ -20,6 +20,7 @@ RUN go build -o app
 
 FROM python:3.6.8-alpine3.9
 
+RUN apk update && apk add --no-cache ffmpeg
 COPY --from=build /usr/local/bin/youtube-dl /usr/local/bin/youtube-dl
 RUN chmod a+rx /usr/local/bin/youtube-dl
 
