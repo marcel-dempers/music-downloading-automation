@@ -20,7 +20,7 @@ func ProcessMessage(message models.Message) (err error) {
 	
 	//download song
 	dl := Downloader{}
-	output ,err := dl.exec([]string{"--write-info-json", "--write-annotations",message.SongUri})
+	output ,err := dl.exec([]string{"--write-info-json", "-x", "--audio-format", "wav", message.SongUri })
 	if err != nil {
 		panic(err)
 	}
@@ -72,10 +72,6 @@ func ProcessMessage(message models.Message) (err error) {
 
 	return err
 }
-
-// func ProcessDownloadFile(message models.Message) (err error) {
-
-// }
 
 type Downloader struct {}
 type Exe struct {}
