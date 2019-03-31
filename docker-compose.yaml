@@ -4,28 +4,34 @@ services:
     container_name: music-storage
     image: apache/couchdb:2.1.0
     ports:
-    - "5984:5984"
+      - "5984:5984"
     environment:
-    - COUCHDB_USER=user
-    - COUCHDB_PASSWORD=password
+      - COUCHDB_USER=user 
+      - COUCHDB_PASSWORD=password
     volumes:
-      - ./components/music-storage/data:/opt/couchdb/data
+    - ./components/music-storage/data:/opt/couchdb/data
   music-queue:
     container_name: music-queue
     image: rabbitmq:3-management
-    environment:
-    - RABBITMQ_DEFAULT_USER=user
-    - RABBITMQ_DEFAULT_PASS=password
     ports:
-    - "15672:15672"
+      - 8080:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=user 
+      - RABBITMQ_DEFAULT_PASS=password
+  music-request-ui:
+    container_name: music-request-ui
+    image: aimvector/music-request-ui:0.0.1
+    build: ./components/music-request-ui
+    ports:
+      - 80:80    
   music-request-api:
     container_name: music-request-api
-    image: aimvector/music-request-api:0.0.1 
+    image: aimvector/music-request-api:0.0.1
     build: ./components/music-request-api
-    ports:
-    - "80:10010"
     volumes:
       - ./components/music-request-api/config.json:/app/configs/config.json
+    ports:
+      - 81:10010
   music-consumer:
     container_name: music-consumer
     image: aimvector/music-consumer:0.0.1
@@ -33,5 +39,3 @@ services:
     volumes:
       - ./components/music-consumer/config.json:/app/configs/config.json
       - ./components/music-consumer/storage/data:/data
-        
- 
