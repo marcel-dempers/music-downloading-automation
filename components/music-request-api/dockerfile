@@ -1,8 +1,6 @@
 FROM golang:1.12.1-alpine3.9 as build
 RUN apk add --no-cache git curl
 
-RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
-
 RUN mkdir -p /go/src/app
 WORKDIR /go/src/app
 
