@@ -21,6 +21,7 @@ func ProcessMessage(message models.Message) (err error) {
 	//download song
 	dl := Downloader{}
 	output ,err := dl.exec([]string{"--write-info-json", "-x", "--audio-format", "wav", message.SongUri })
+	//output ,err := dl.exec([]string{"--write-info-json", "-x", message.SongUri })
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +35,7 @@ func ProcessMessage(message models.Message) (err error) {
 		line := scanner.Text()
 		fmt.Println(line)
 
-		if strings.Contains(line, "[download]") && strings.Contains(line, ".mp3") {
+		if strings.Contains(line, "[ffmpeg] Destination") && strings.Contains(line, ".wav") {
 			fmt.Println("Finding downloaded file on outputline: " + line)
 			re := regexp.MustCompile(`\w*\/[^.]+[.]\w{1,3}`)
 			filePath := re.FindAllString(line, -1)
@@ -53,7 +54,7 @@ func ProcessMessage(message models.Message) (err error) {
 	if downloadedFilePath != "" {
 		content, err := ioutil.ReadFile(downloadedFilePath)
 		if err != nil {
-			return errors.New("Problem reading downloaded file")
+			return errors.New("Problem reading downloaded file: " + downloadedFilePath)
 		}
 		
 		filenoext := strings.Replace(downloadedFilePath, filepath.Ext(downloadedFilePath), "", 1)

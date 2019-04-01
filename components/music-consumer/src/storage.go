@@ -60,13 +60,16 @@ func ConnectAndSaveContent(document models.Document, content []byte, metadatafil
 	defer rcMeta.Close()
 	defer rc.Close()
 
-	attachment := &kivik.Attachment{Filename : document.FileName, Content : rc, ContentType : "audio/mpeg" }
+	attachment := &kivik.Attachment{Filename : document.FileName, Content : rc, ContentType : "audio/wav" }
 	attachmentMeta := &kivik.Attachment{Filename : document.MetadataFileName, Content : rcMeta, ContentType : "application/json" }
+	
+	fmt.Println("Adding document...")
 	rev, err := db.Put(context.TODO(), id.String(), doc)
     if err != nil {
         panic(err)
 	}
 
+	fmt.Println("Adding attachments..")
 	rev, err = db.PutAttachment(context.TODO(),id.String(), rev, attachment)
 	if err != nil {
         panic(err)
@@ -75,6 +78,8 @@ func ConnectAndSaveContent(document models.Document, content []byte, metadatafil
 	if err != nil {
         panic(err)
 	}
+
+	fmt.Println("Binary data stored!")
 	
 	//rev, err := db.Save("empty", id.String(), "") 
 	//rev, err = db.SaveAttachment(id.String(), "", "test" , "Application/audio", reader )
