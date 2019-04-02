@@ -7,33 +7,60 @@
         integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <title>Music Finder UI</title>
 
-    <!-- Custom fonts for this template -->
-    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
-        type='text/css'>
-    <link
-        href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
-        rel='stylesheet' type='text/css'>
-
 </head>
 
 <body>
-
     <noscript>You need to enable JavaScript to run this app.</noscript>
-
-    <div class="container">
-        <form class="form-inline">
-            <div class="form-group mb-2">
-                <label for="musicurl" class="sr-only">Music Request URL</label>
-                <input type="text" readonly class="form-control-plaintext" id="musicurl" value="Music Request URL">
+    <div class="container" style="padding-top:10px;">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="musicurl" class="sr-only">Music Request URL</label>
+                    <input type="text" readonly class="form-control-plaintext" id="musicurl" value="Music Request URL">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="URL" class="sr-only">URL</label>
+                    <input type="text" class="form-control" id="inputURL"
+                        placeholder="https://[youtube/soundcloud].com\some-song">
+                </div>
+                <div class="form-group col-md-2">
+                    <button id="sendtoqueue" type="button" class="btn btn-primary mb-2">Send to Queue</button>
+                </div>
             </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <label for="URL" class="sr-only">URL</label>
-                <input type="text" class="form-control" id="inputURL" placeholder="URL">
-            </div>
-            <button id="sendtoqueue" type="button" class="btn btn-primary mb-2">Send to Queue</button>
         </form>
     </div>
-    <hr>
+    <hr />
+
+    <ul id="inprogress" class="list-group list-group-flush">
+    </ul>
+    <hr />
+    <p>
+        <a class="btn btn-primary" data-toggle="collapse" href="#collapseQueue" role="button" aria-expanded="false"
+            aria-controls="collapseExample">
+            Toggle Music Queue
+        </a>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseDataStore"
+            aria-expanded="false" aria-controls="collapseExample">
+            Toggle Data Store
+        </button>
+    </p>
+    <div class="collapse" id="collapseQueue">
+        <div class="card card-body">
+            <div class="embed-responsive embed-responsive-4by3">
+                <iframe class="embed-responsive-item" src="http://localhost:8080/#/queues/%2F/music-request"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseDataStore">
+        <div class="card card-body">
+            <div class="embed-responsive embed-responsive-4by3">
+                <iframe class="embed-responsive-item" src="http://127.0.0.1:5984/_utils#setup" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+    <hr />
+
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -46,19 +73,19 @@
         integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
         crossorigin="anonymous"></script>
 
-        <script>
-                $(document).ready(function () {
-                    $("button").click(function () {
-                        var query = encodeURIComponent( $("#inputURL").val());
-                        
-                        $.post("http://localhost:81/submit/query/" + query, function (data, status) {
-                            alert("done!" + status);
-                        });
+    <script>
+        $(document).ready(function () {
+            $("button").click(function () {
+                var query = encodeURIComponent($("#inputURL").val());
+                if (query != "") {
+                    $.post("http://localhost:81/submit/query/" + query, function (data, status) {
+                        $("#inprogress").append(" <li class=\"list-group-item\">" + query + "</li>");
+                        $("#inputURL").val("")
                     });
-                });
-        
-            </script>
-
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
