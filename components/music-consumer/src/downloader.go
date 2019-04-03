@@ -90,12 +90,7 @@ func (e Exe) exec(program string, args []string, timeoutInSec time.Duration) (ou
 	var outputbuf, errbuf bytes.Buffer
     cmd.Stdout = &outputbuf
 	cmd.Stderr = &errbuf
-	// stderr, err := cmd.StderrPipe()
-	// if err != nil {
-	// 	fmt.Println("Exe returning error from StderrPipe...")
-	// 	fmt.Print(err)
-	// 	return err
-	// }
+	
 	if err := cmd.Start(); err != nil {
 		fmt.Println("Exe returning error from Start...")
 		fmt.Print(err)
@@ -108,13 +103,12 @@ func (e Exe) exec(program string, args []string, timeoutInSec time.Duration) (ou
 	select {
 	case <-timeout:
 		cmd.Process.Kill()
-		// slurp, _ := ioutil.ReadAll(stderr)
-		// fmt.Printf("%s\n", slurp)
+		
 		return outputbuf, errors.New("There is a problem with the request")
 	case err := <-done:
-		//slurp, _ := ioutil.ReadAll(stderr)
+	
 		fmt.Println("Exe done")
-		//fmt.Printf("%s\n", slurp)
+		
 		if err != nil {
 			fmt.Println("Exe returned error after completion", err)
 			

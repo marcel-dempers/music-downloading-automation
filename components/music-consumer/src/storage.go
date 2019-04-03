@@ -25,11 +25,6 @@ func (cb *ClosingBuffer) Close() (err error) {
 
 func ConnectAndSaveContent(document models.Document, content []byte, metadatafile []byte) {
 
-	//var timeout = time.Duration(500 * time.Millisecond)
-	//conn, err := couchdb.NewConnection("music-storage",5984,timeout)
-	//auth := couchdb.BasicAuth{Username: "user", Password: "password" }
-	//db := conn.SelectDB("mydatabase", &auth)
-	
 	client, err := kivik.New("couch", "http://music-storage:5984/")
 	if err != nil {
         panic(err)
