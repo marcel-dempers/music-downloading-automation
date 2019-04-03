@@ -12,6 +12,7 @@ RUN go get github.com/streadway/amqp
 RUN go get github.com/go-kivik/kivik
 RUN go get github.com/go-kivik/couchdb
 RUN go get github.com/rs/xid
+RUN go get github.com/h2so5/goback/regexp
 
 COPY ./src /go/src/app/
 

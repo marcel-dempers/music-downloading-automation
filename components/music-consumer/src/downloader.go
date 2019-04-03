@@ -9,9 +9,10 @@ import (
 	"bytes"
 	"bufio"
 	"strings"
-	"regexp"
+	//"regexp"
 	"io/ioutil"
 	"path/filepath"
+	"github.com/h2so5/goback/regexp"
 )
 
 func ProcessMessage(message models.Message) (err error) {
@@ -37,16 +38,17 @@ func ProcessMessage(message models.Message) (err error) {
 
 		if strings.Contains(line, "[ffmpeg] Destination") && strings.Contains(line, ".wav") {
 			fmt.Println("Finding downloaded file on outputline: " + line)
-			re := regexp.MustCompile(`\w*\/[^.]+[.]\w{1,3}`)
-			filePath := re.FindAllString(line, -1)
 
+			re := regexp.MustCompile(`\w*\/.*(?=\.)`)
+			filePath := re.FindAllString(line, -1)
+			
 			if filePath == nil {
 				//problem getting the destination of downloaded file
 				return errors.New("Problem retrieve destination path from buffer")
 			}
 
-			fmt.Println("File saved to: " + filePath[0])
-			downloadedFilePath = filePath[0]
+			fmt.Println("File saved to: " + filePath[0] + ".wav")
+			downloadedFilePath = filePath[0] + ".wav"
 		}
 	}
 	

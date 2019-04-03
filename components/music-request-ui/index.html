@@ -78,7 +78,7 @@
             $("button").click(function () {
                 var query = encodeURIComponent($("#inputURL").val());
                 if (query != "") {
-                    $.post("http://localhost:81/submit/query/" + query, function (data, status) {
+                    $.post("http://localhost:8001/submit/query/" + query, function (data, status) {
                         $("#inprogress").append(" <li class=\"list-group-item\">" + query + "</li>");
                         $("#inputURL").val("")
                     });
