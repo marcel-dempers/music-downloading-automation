@@ -13,7 +13,7 @@ var config *models.Configuration
 func main() {
 	c := GetConfiguration()
 	config = c
-
+	InitStorage()
 	router := httprouter.New()
 
 	router.GET("/songs", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
