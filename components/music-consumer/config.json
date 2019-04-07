@@ -8,5 +8,10 @@
         "Port" : 5672,
         "Username" : "user",
         "Password" : "password"
+    },
+    "Metadata" : {
+        "License" : {
+            "NcsAutodetect" : true
+        }
     }
 }

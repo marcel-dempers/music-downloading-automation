@@ -12,14 +12,16 @@ import (
 	 
 )
 
+var appConfig *models.Configuration 
+
 func failOnErrorRetry(err error, msg string) {
 	if err != nil {
 	  fmt.Println("Error occurred: " + msg)
 	}
 }
 
-func retry(attempts int, sleep time.Duration,config models.RabbitMq, fn func(config models.RabbitMq) error) error {
-	if err := fn(config); err != nil {
+func retry(attempts int, sleep time.Duration, fn func() error) error {
+	if err := fn(); err != nil {
 		if s, ok := err.(stop); ok {
 			// Return the original error for later checking
 			return s.error
@@ -27,7 +29,7 @@ func retry(attempts int, sleep time.Duration,config models.RabbitMq, fn func(con
  
 		if attempts--; attempts > 0 {
 			time.Sleep(sleep)
-			return retry(attempts, 2*sleep,config, fn)
+			return retry(attempts, 2*sleep, fn)
 		}
 		return err
 	}
@@ -39,15 +41,16 @@ type stop struct {
 }
 
 func main() {
-	config := GetConfiguration().RabbitMq
-	
+	c := GetConfiguration()
+	appConfig = c 
 	//var conn *amqp.Connection
 	//var ch *amqp.Channel
 	//var q *amqp.Queue
 
+	queueCfg := appConfig.RabbitMq
 	duration, _ := time.ParseDuration("10s")
-	retry(3, duration, config, func(config models.RabbitMq) (err error){
-		conn, err := amqp.Dial("amqp://" + config.Username + ":" + config.Password + "@" + config.Host + ":" + strconv.Itoa(config.Port) +"/")
+	retry(3, duration, func() (err error){
+		conn, err := amqp.Dial("amqp://" + queueCfg.Username + ":" + queueCfg.Password + "@" + queueCfg.Host + ":" + strconv.Itoa(queueCfg.Port) +"/")
 		failOnErrorRetry(err, "Failed to connect to RabbitMQ")
 		
 		if err == nil {

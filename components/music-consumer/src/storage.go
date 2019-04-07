@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"github.com/go-kivik/kivik"
      _ "github.com/go-kivik/couchdb"
-	"github.com/rs/xid"
 	"bytes"
 	"io"
 	"app/models"
+	"io/ioutil"
+	"encoding/json"
+	"encoding/base64"
 )
 
 type ClosingBuffer struct { 
@@ -32,16 +34,39 @@ func ConnectAndSaveContent(document models.Document, content []byte, metadatafil
 	
 	db := client.DB(context.TODO(), "mydatabase")
  
-	id := xid.New()
 	reader := bytes.NewReader(content)
 	readerMeta := bytes.NewReader(metadatafile)
 	
+	metadata, err := ioutil.ReadFile(document.MetadataFilePath)
+	if err != nil {
+		fmt.Printf("Read metadata file error: %v\n", err)
+		panic(err)
+	}
+  
+	var meta models.MetadataFile
+	err = json.Unmarshal(metadata, &meta)
+	  
+	if err != nil {
+	  fmt.Printf("Problem in metatdata file: %v\n", err.Error())
+	  panic(err)
+	}
+
+	if appConfig.Metadata.License.NcsAutodetect == true {
+		if meta.Uploader == "NoCopyrightSounds" {
+			meta.License = "ncs"
+		}
+	}
+     
+	id := base64.StdEncoding.EncodeToString([]byte(meta.Uploader + meta.ID))
+
 	doc := map[string]interface{}{
-        "_id":      id.String(),
+		"_id":      id,
 		"fileName":     document.FileName,
+		"enrichDate" : "",
 		"localFilePath" : document.LocalFilePath,
 		"metadataFilePath" : document.MetadataFilePath,
 		"metadataFileName" : document.MetadataFileName,
+		"metadata" : meta,
 	}
 	
 	cb := &ClosingBuffer{reader}
@@ -58,25 +83,47 @@ func ConnectAndSaveContent(document models.Document, content []byte, metadatafil
 	attachment := &kivik.Attachment{Filename : document.FileName, Content : rc, ContentType : "audio/wav" }
 	attachmentMeta := &kivik.Attachment{Filename : document.MetadataFileName, Content : rcMeta, ContentType : "application/json" }
 	
-	fmt.Println("Adding document...")
-	rev, err := db.Put(context.TODO(), id.String(), doc)
-    if err != nil {
-        panic(err)
-	}
+	//see if doc exists first
+	fmt.Println("Checking doc...")
 
-	fmt.Println("Adding attachments..")
-	rev, err = db.PutAttachment(context.TODO(),id.String(), rev, attachment)
-	if err != nil {
-        panic(err)
-	}
-	rev, err = db.PutAttachment(context.TODO(),id.String(), rev, attachmentMeta)
-	if err != nil {
-        panic(err)
-	}
+	var rev string
+	row := db.Get(context.TODO(), id)
+	rev = row.Rev
+	if rev == "" {
+		fmt.Println("Document does not exist, creating...")
+		rev, err = db.Put(context.TODO(), id, doc)
+		if err != nil {
+			panic(err)
+		}
 
-	fmt.Println("Binary data stored!")
+	} else {
+		fmt.Println("Document exists, updating...")
+		doc["_rev"] = row.Rev
+		rev, err = db.Put(context.TODO(), id, doc)
+		if err != nil {
+			panic(err)
+		}
+	}
+	 
+	if rev != "" {
+
+		fmt.Println("Adding attachments..")
+		rev, err = db.PutAttachment(context.TODO(),id, rev, attachment)
+		if err != nil {
+			panic(err)
+		}
+		rev, err = db.PutAttachment(context.TODO(),id, rev, attachmentMeta)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("Binary data stored!")
+		
+		//rev, err := db.Save("empty", id.String(), "") 
+		//rev, err = db.SaveAttachment(id.String(), "", "test" , "Application/audio", reader )
+		fmt.Println(rev)
+	}
 	
-	//rev, err := db.Save("empty", id.String(), "") 
-	//rev, err = db.SaveAttachment(id.String(), "", "test" , "Application/audio", reader )
-	fmt.Println(rev)
+
+
 }

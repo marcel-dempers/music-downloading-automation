@@ -6,6 +6,7 @@ type Download struct {
 type Configuration struct {
 	Download Download
 	RabbitMq RabbitMq
+	Metadata Metadata
 }
 
 type RabbitMq struct {
@@ -13,4 +14,12 @@ type RabbitMq struct {
 	Port int
 	Username string
 	Password string
+}
+
+type Metadata struct {
+	License License
+}
+
+type License struct {
+	NcsAutodetect bool
 }

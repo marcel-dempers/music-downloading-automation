@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 )
 
-func GetConfiguration() models.Configuration{
+func GetConfiguration() *models.Configuration{
 
 	file, e := ioutil.ReadFile("/app/configs/config.json")
     if e != nil {
@@ -16,7 +16,7 @@ func GetConfiguration() models.Configuration{
         os.Exit(1)
 	}
 
-	var config models.Configuration
+	var config *models.Configuration
 	err := json.Unmarshal(file, &config)
 	
 	if err != nil {

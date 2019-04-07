@@ -9,7 +9,6 @@ import (
 	"bytes"
 	"bufio"
 	"strings"
-	//"regexp"
 	"io/ioutil"
 	"path/filepath"
 	"github.com/h2so5/goback/regexp"
