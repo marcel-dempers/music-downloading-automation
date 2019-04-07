@@ -39,3 +39,11 @@ services:
     volumes:
       - ./components/music-consumer/config.json:/app/configs/config.json
       - ./components/music-consumer/storage/data:/data
+  music-wharehouse-api:
+    container_name: music-wharehouse-api
+    image: aimvector/music-wharehouse-api:0.0.1
+    build: ./components/music-wharehouse-api
+    ports:
+      - 8002:10010
+    volumes:
+      - ./components/music-wharehouse-api/config.json:/app/configs/config.json
