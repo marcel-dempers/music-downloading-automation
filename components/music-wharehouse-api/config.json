@@ -1,0 +1,7 @@
+{
+    "CouchDB" : {
+        "Host" : "music-storage",
+        "Port" : 5984,
+        "Database" : "mydatabase"
+    }
+}

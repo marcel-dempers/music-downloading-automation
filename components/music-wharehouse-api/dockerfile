@@ -1,0 +1,21 @@
+FROM golang:1.12.1-alpine3.9 as build
+RUN apk add --no-cache git curl
+
+RUN mkdir -p /go/src/app
+WORKDIR /go/src/app
+
+RUN go get github.com/julienschmidt/httprouter
+RUN go get github.com/sirupsen/logrus
+
+COPY ./src /go/src/app/
+
+RUN go build -o app
+################################################################################################################
+
+FROM alpine:3.9
+
+RUN mkdir -p /app
+COPY --from=build /go/src/app/app /app/
+WORKDIR /app
+
+CMD ["./app"]
