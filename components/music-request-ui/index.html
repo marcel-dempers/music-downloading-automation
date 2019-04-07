@@ -76,9 +76,10 @@
     <script>
         $(document).ready(function () {
             $("button").click(function () {
-                var query = encodeURIComponent($("#inputURL").val());
+                var query = $("#inputURL").val()
                 if (query != "") {
-                    $.post("http://localhost:8001/submit/query/" + query, function (data, status) {
+                    $.post("http://localhost:8001/submit/query/" + encodeURIComponent(query), function (data, status) {
+                        alert('done');
                         $("#inprogress").append(" <li class=\"list-group-item\">" + query + "</li>");
                         $("#inputURL").val("")
                     });
