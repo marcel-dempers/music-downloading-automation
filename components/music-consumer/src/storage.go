@@ -59,6 +59,7 @@ func ConnectAndSaveContent(document models.Document, content []byte, metadatafil
      
 	id := base64.StdEncoding.EncodeToString([]byte(meta.Uploader + meta.ID))
 
+	meta.AttachmentFileName = document.FileName
 	doc := map[string]interface{}{
 		"_id":      id,
 		"fileName":     document.FileName,

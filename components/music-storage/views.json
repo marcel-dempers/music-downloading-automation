@@ -1,0 +1,13 @@
+{"_id":"_design/songlist_view","_rev":"3-3e0a126fe974a4fc286df290799b786d","views":{"main_songlist":{"map":"function (doc) {\n    emit(doc._id,doc.metadata);\n}"}},"language":"javascript"}
+
+
+{
+    "_id": "_design/songlist_view",
+    "_rev": "4-c1a0d4bdefb8f82d2f14e7aee3316cbd",
+    "views": {
+      "main_songlist": {
+        "map": "function (doc) {\n    emit(doc._id,doc.metadata);\n}"
+      }
+    },
+    "language": "javascript"
+  }

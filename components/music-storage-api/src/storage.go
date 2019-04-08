@@ -90,3 +90,37 @@ func Storage_SongList_All() (songlist models.Songlist, err error) {
 
 	return songlist, err 
 }
+
+///Returns rows from songs view
+func Storage_SongItem_ByUrl(url string) (songlist models.Songlist, err error) {
+	
+	req, err := http.NewRequest("GET", storageUri + "/mydatabase/_design/songitembyurl_view/_view/songitem?key=" + url, nil)
+	
+	req.Header.Set("Cache-Control", "no-cache")
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := storageClient.Do(req)
+    songlist = models.Songlist{}
+	if err != nil {
+		return songlist, err
+	}
+
+	if resp != nil {
+		defer resp.Body.Close()
+
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return songlist, err
+		}
+
+		err = json.Unmarshal(bodyBytes, &songlist)
+		
+		if err != nil {
+			return songlist, err
+		}
+
+		return songlist, nil
+	}
+
+	return songlist, err 
+}

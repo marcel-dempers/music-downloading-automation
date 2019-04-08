@@ -6,59 +6,65 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
         integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <title>Music Finder UI</title>
-
 </head>
 
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div class="container" style="padding-top:10px;">
-        <form>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="musicurl" class="sr-only">Music Request URL</label>
-                    <input type="text" readonly class="form-control-plaintext" id="musicurl" value="Music Request URL">
+
+    <div ng-app="songs" ng-controller="songsController">
+
+        <div class="container" style="padding-top:10px;">
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="musicurl" class="sr-only">Music Request URL</label>
+                        <input type="text" readonly class="form-control-plaintext" id="musicurl"
+                            value="Music Request URL">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="URL" class="sr-only">URL</label>
+                        <input type="text" class="form-control" id="inputURL"
+                            placeholder="https://[youtube/soundcloud].com\some-song">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <button ng-click="AddItem()" id="sendtoqueue" type="button" class="btn btn-primary mb-2">Send to
+                            Queue</button>
+                    </div>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="URL" class="sr-only">URL</label>
-                    <input type="text" class="form-control" id="inputURL"
-                        placeholder="https://[youtube/soundcloud].com\some-song">
-                </div>
-                <div class="form-group col-md-2">
-                    <button id="sendtoqueue" type="button" class="btn btn-primary mb-2">Send to Queue</button>
-                </div>
+            </form>
+        </div>
+
+        <div>
+            <div style="margin-bottom: 5px;" class="progress" ng-repeat="q in songqueue">
+                <div id="{{ q.id }}" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                    style="width: {{ q.progress }}%;">{{ q.url }}</div>
             </div>
-        </form>
+        </div>
+
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Uploader</th>
+                    <th>Artist</th>
+                    <th>Title</th>
+                    <th>URL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="s in songlist">
+                    <td>{{ s.value.uploader }}</td>
+                    <td>{{ s.value.artist }}</td>
+                    <td>{{ s.value.title }}</td>
+                    <td> <a target="_blank" href="{{ s.value.webpage_url }}">{{ s.value.webpage_url }}</a> </td>
+                    <td><a class="btn btn-primary" target="_blank"
+                            href="{{ 'http://localhost:5984/mydatabase/' + s.id + '/' + s.value.filename }}"
+                            role="button">Download Wav</a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <hr />
 
 
-    <div ng-app="songlist" ng-controller="songController">
-            <table class="table table-condensed .table-hover">
-                    <thead>
-                      <tr>
-                        <th>Uploader</th>
-                        <th>Artist</th>
-                        <th>Title</th>
-                        <th>URL</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr ng-repeat="x in rows">
-                            <td>{{ x.value.uploader }}</td>
-                        <td>{{ x.value.artist }}</td>
-                        <td>{{ x.value.title }}</td>
-                        <td>{{ x.value.webpage_url }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-    </div>
-
-    <ul id="inprogress" class="list-group list-group-flush">
-            <!-- <div class="progress">
-                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                   -->
-    </ul>
     <hr />
     <p>
         <a class="btn btn-primary" data-toggle="collapse" href="#collapseQueue" role="button" aria-expanded="false"
@@ -99,28 +105,72 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 
-
     <script>
-        var app = angular.module('songlist', []);
-        app.controller('songController', function ($scope, $http) {
-            
-            $http.get("http://localhost:8002/songs")
-            .then(function (response) {$scope.rows = response.data.rows;});
+
+        var model = {
+            songlist: [],
+            songqueue: []
+        };
+
+        var app = angular.module('songs', []);
+        app.controller('songsController', function ($scope, $http) {
+
+            $scope.AddItem = function () {
+                var query = $("#inputURL").val();
+                $("#inputURL").val("");
+                id = "progressbar" + Math.floor(Math.random() * 100).toString();
+                var song = {
+                    url: query, progress: 0, id: id, timer: function (songItem) {
+                        function start(){
+                            var current_progress = 0;
+                            var interval = setInterval(function () {
+                                current_progress += 10;
+                                $("#" + id)
+                                    .css("width", current_progress + "%")
+                                    .attr("aria-valuenow", current_progress)
+                                    .text(current_progress + "% Complete");
+                                if (current_progress >= 100)
+                                    clearInterval(interval);
+                            }, 1000);
+                        }
+
+                        start();
+                    }
+                };
+
+                model.songqueue.push(song);
+                song.timer(song);
+                $scope.songqueue = model.songqueue;
+            };
+            $http.get("http://localhost:8002/songs/all")
+                .then(function (response) {
+
+                    //$scope.model = model;
+                    for (i = 0; i < response.data.rows.length; ++i) {
+                        model.songlist.push(response.data.rows[i]);
+                    }
+                    $scope.songlist = response.data.rows;
+                });
         });
 
     </script>
+
     <script>
-        $(document).ready(function () {
-            $("button").click(function () {
-                var query = $("#inputURL").val()
-                if (query != "") {
-                    $.post("http://localhost:8001/submit/query/" + encodeURIComponent(query), function (data, status) {
-                        $("#inprogress").append(" <li class=\"list-group-item\">" + query + "</li>");
-                        $("#inputURL").val("")
-                    });
-                }
-            });
-        });
+        // $(document).ready(function () {
+        //     $("button").click(function () {
+        //         var query = $("#inputURL").val()
+        //         if (query != "") {
+
+        //             var song = {url:query};
+        //             model.songqueue.push(song);
+        //             $("#inputURL").val("")
+        //             // $.post("http://localhost:8001/submit/query/" + encodeURIComponent(query), function (data, status) {
+        //             //     $("#inprogress").append(" <li class=\"list-group-item\">" + query + "</li>");
+        //             //     $("#inputURL").val("")
+        //             // });
+        //         }
+        //     });
+        // });
     </script>
 </body>
 

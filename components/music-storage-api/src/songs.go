@@ -42,4 +42,31 @@ func SongsAll(writer http.ResponseWriter, request *http.Request, p httprouter.Pa
 	//fmt.Printf("%+v\n",rows)
 	return "", err
 }
-    
+	
+func SongByUrl(writer http.ResponseWriter, request *http.Request, p httprouter.Params) (songsJSON string, err error) {
+
+	u, err := url.Parse(request.URL.String())
+	if err != nil {
+		return "", err
+	}
+
+	query := u.Query()
+	q := query.Get("url")
+	//fmt.Println(q)
+	songlist, err := Storage_SongItem_ByUrl(q)
+	if err != nil {
+		return "", err
+	}
+
+	songlistBytes, err := json.Marshal(songlist)
+	if err != nil {
+		return "", err
+	}
+
+	r := bytes.NewReader(songlistBytes)
+	if b, err := ioutil.ReadAll(r); err == nil {
+			return string(b), nil
+	}
+
+	return "", err
+}

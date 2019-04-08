@@ -34,6 +34,15 @@ func main() {
 		fmt.Fprintf(w, "%s", songs)
 	})
 
+	router.GET("/song/byurl", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
+		songs, err := SongByUrl(w,r,p)
+		if(err != nil){
+			http.Error(w, err.Error(), 500)
+		}
+
+		fmt.Fprintf(w, "%s", songs)
+	})
+
 	fmt.Println("Running...")
 	log.Fatal(http.ListenAndServe(":10010", router))
 }
