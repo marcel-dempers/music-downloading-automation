@@ -6,19 +6,25 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"bytes"
+	"net/url"
+	"fmt"
 )
 
-func Songs(writer http.ResponseWriter, request *http.Request, p httprouter.Params) (songsJSON string, err error) {
-	
-	// u, err := url.Parse(request.URL.String())
-	// if err != nil {
-	// 	return rows, err
-	// }
+func SongsSearch(writer http.ResponseWriter, request *http.Request, p httprouter.Params) (songsJSON string, err error) {
+	u, err := url.Parse(request.URL.String())
+	if err != nil {
+		return "", err
+	}
 
-	//query := u.Query()
-	//fmt.Println(query)
-    
-	songlist, err := GetAllSongs()
+	query := u.Query()
+	fmt.Println(query)
+
+	return "", nil
+}
+
+func SongsAll(writer http.ResponseWriter, request *http.Request, p httprouter.Params) (songsJSON string, err error) {
+	
+	songlist, err := Storage_SongList_All()
 	if err != nil {
 		return "", err
 	}
@@ -36,3 +42,4 @@ func Songs(writer http.ResponseWriter, request *http.Request, p httprouter.Param
 	//fmt.Printf("%+v\n",rows)
 	return "", err
 }
+    

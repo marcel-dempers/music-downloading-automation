@@ -3,7 +3,7 @@ package models
 type Songlist struct {
 	Total_Rows	int 		`json:"total_rows"`
 	Offset	int 			`json:"offset"`
-	Rows []Song				`json:"rows"`
+	Rows []SonglistItem		`json:"rows"`
 }
 
 type SonglistItem struct {

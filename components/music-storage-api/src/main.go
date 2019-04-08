@@ -16,8 +16,17 @@ func main() {
 	InitStorage()
 	router := httprouter.New()
 
-	router.GET("/songs", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
-		songs, err := Songs(w,r,p)
+	router.GET("/songs/all", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
+		songs, err := SongsAll(w,r,p)
+		if(err != nil){
+			http.Error(w, err.Error(), 500)
+		}
+
+		fmt.Fprintf(w, "%s", songs)
+	})
+
+	router.GET("/songs/search", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
+		songs, err := SongsSearch(w,r,p)
 		if(err != nil){
 			http.Error(w, err.Error(), 500)
 		}

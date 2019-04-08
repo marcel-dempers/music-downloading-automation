@@ -1,1 +1,4 @@
-* create structs for storage api to match schema
+init the view
+function (doc) {
+  emit(doc._id, doc.metadata);
+}

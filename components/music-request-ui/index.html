@@ -31,7 +31,33 @@
     </div>
     <hr />
 
+
+    <div ng-app="songlist" ng-controller="songController">
+            <table class="table table-condensed .table-hover">
+                    <thead>
+                      <tr>
+                        <th>Uploader</th>
+                        <th>Artist</th>
+                        <th>Title</th>
+                        <th>URL</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="x in rows">
+                            <td>{{ x.value.uploader }}</td>
+                        <td>{{ x.value.artist }}</td>
+                        <td>{{ x.value.title }}</td>
+                        <td>{{ x.value.webpage_url }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+    </div>
+
     <ul id="inprogress" class="list-group list-group-flush">
+            <!-- <div class="progress">
+                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                   -->
     </ul>
     <hr />
     <p>
@@ -61,8 +87,6 @@
     </div>
     <hr />
 
-
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
@@ -73,13 +97,24 @@
         integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
         crossorigin="anonymous"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+
+    <script>
+        var app = angular.module('songlist', []);
+        app.controller('songController', function ($scope, $http) {
+            
+            $http.get("http://localhost:8002/songs")
+            .then(function (response) {$scope.rows = response.data.rows;});
+        });
+
+    </script>
     <script>
         $(document).ready(function () {
             $("button").click(function () {
                 var query = $("#inputURL").val()
                 if (query != "") {
                     $.post("http://localhost:8001/submit/query/" + encodeURIComponent(query), function (data, status) {
-                        alert('done');
                         $("#inprogress").append(" <li class=\"list-group-item\">" + query + "</li>");
                         $("#inputURL").val("")
                     });
