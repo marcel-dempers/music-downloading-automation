@@ -36,8 +36,8 @@
 
         <div>
             <div style="margin-bottom: 5px;" class="progress" ng-repeat="q in songqueue">
-                <div id="{{ q.id }}" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                    style="width: 0%;">{{ q.url }}</div>
+                <div id="{{ q.id }}" class="progress-bar progress-bar-striped progress-bar-animated {{ q.cssclass }}" role="progressbar"
+                    style="width: {{ q.current_progress }}%;">{{ q.url }}</div>
             </div>
         </div>
 
@@ -127,7 +127,8 @@
                     current_progress: 0,
                     timeout: 1000,
                     done: false,
-                    interval: undefined
+                    interval: undefined,
+                    cssclass: ""
                 };
 
                 //check if we have the song
@@ -137,12 +138,12 @@
                         if (response.data.rows.length > 0) {
                             song.done = true;
                             song.current_progress = 100; //we have the song,mark as complete!   
-
+                            song.cssclass = "bg-success"
                             model.songqueue.push(song);
-                            $("#" + song.id)
-                                .css("width", song.current_progress + "%")
-                                .addClass("bg-success")
-                                .text(song.url + "[ Complete]");
+                            // $("#" + song.id)
+                            //     .css("width", song.current_progress + "%")
+                            //     .addClass("bg-success")
+                            //     .text(song.url + "[ Complete]");
                         }
                         else {
                             //we dont have the song! queue it
@@ -165,14 +166,12 @@
 
                                     if (!song.done) {
                                         song.current_progress += 5;
-                                        $("#" + song.id)
-                                            .css("width", song.current_progress + "%")
+                                        $("#" + song.id) //.css("width", song.current_progress + "%")
                                             .attr("aria-valuenow", song.current_progress);
 
                                         if (song.current_progress >= 100) {
                                             clearInterval(song.interval);
-                                            $("#" + song.id)
-                                                .css("width", song.current_progress + "%")
+                                            $("#" + song.id) //.css("width", song.current_progress + "%")
                                                 .addClass("bg-danger")
                                                 .text(song.url + " [Timed out waiting for download]");
                                         }
