@@ -117,58 +117,81 @@
 
             $scope.AddItem = function () {
                 var query = $("#inputURL").val();
-                
+                $("#inputURL").val("");
+
                 id = "progressbar" + Math.floor(Math.random() * 100).toString();
-                
+
                 var song = {
-                    url : query,
-                    id : id,
-                    current_progress : 0,
-                    timeout : 1000,
-                    done : false
+                    url: query,
+                    id: id,
+                    current_progress: 0,
+                    timeout: 1000,
+                    done: false,
+                    interval: undefined
                 };
 
-                song.interval = setInterval(function(){
+                //check if we have the song
+                $http.get("http://localhost:8002/song/byurl?url=" + '"' + encodeURIComponent(song.url) + '"')
+                    .then(function (response) {
 
-                    $http.get("http://localhost:8002/song/byurl?url=" + '"' + encodeURIComponent(song.url) + '"')
-                        .then(function (response) {
-                            
-                            if (response.data.rows.length > 0) {
-                                song.done = true;
-                                song.current_progress = 100; //mark as complete!   
-                                $("#" + song.id)
-                                .css("width", song.current_progress + "%")
-                                .text(song.current_progress + "% Complete")
-                                .addClass("bg-success");
+                        if (response.data.rows.length > 0) {
+                            song.done = true;
+                            song.current_progress = 100; //we have the song,mark as complete!   
 
-                                clearInterval(song.interval);
-                            }
-                        });
-                    
-                    if (!song.done) {
-                            song.current_progress += 10;
+                            model.songqueue.push(song);
                             $("#" + song.id)
-                            .css("width", song.current_progress + "%")
-                            .attr("aria-valuenow", song.current_progress)
-                            .text(song.current_progress + "% Complete");
-
-                            if (song.current_progress >= 100) {
-                                clearInterval(song.interval);
-                                $("#" + song.id)
                                 .css("width", song.current_progress + "%")
-                                .text(song.current_progress + "% Complete")
-                                .addClass("bg-danger");
-                            }
-                                
-                    }
+                                .addClass("bg-success")
+                                .text(song.url + "[ Complete]");
+                        }
+                        else {
+                            //we dont have the song! queue it
 
-                    console.log(song.url + song.current_progress.toString())
-                },song.timeout);
+                            $.post("http://localhost:8001/submit/query/" + encodeURIComponent(song.url), function (data, status) {
+                                song.interval = setInterval(function () {
+                                    $http.get("http://localhost:8002/song/byurl?url=" + '"' + encodeURIComponent(song.url) + '"')
+                                        .then(function (response) {
+                                            if (response.data.rows.length > 0) {
+                                                song.done = true;
+                                                song.current_progress = 100; //mark as complete!   
+                                                $("#" + song.id)
+                                                    .css("width", song.current_progress + "%")
+                                                    .addClass("bg-success")
+                                                    .text(song.url + "[ Complete]");
 
-                $("#inputURL").val("");
-                
-                model.songqueue.push(song);
-                $scope.songqueue = model.songqueue;
+                                                clearInterval(song.interval);
+                                            }
+                                        });
+
+                                    if (!song.done) {
+                                        song.current_progress += 5;
+                                        $("#" + song.id)
+                                            .css("width", song.current_progress + "%")
+                                            .attr("aria-valuenow", song.current_progress);
+
+                                        if (song.current_progress >= 100) {
+                                            clearInterval(song.interval);
+                                            $("#" + song.id)
+                                                .css("width", song.current_progress + "%")
+                                                .addClass("bg-danger")
+                                                .text(song.url + " [Timed out waiting for download]");
+                                        }
+
+                                    }
+
+                                }, song.timeout);
+
+                                model.songqueue.push(song);
+                            });
+                        }
+
+                        $scope.songqueue = model.songqueue;
+                    });
+
+
+
+
+
             };
             $http.get("http://localhost:8002/songs/all")
                 .then(function (response) {
