@@ -1,6 +1,5 @@
 {
     "_id": "_design/songitembyurl_view",
-    "_rev": "2-5fd519ad76bd33c3b919138f1bef4185",
     "views": {
         "songitem": {
             "map": "function (doc) {\n  emit(doc.metadata.webpage_url,doc.metadata);\n}"
