@@ -140,10 +140,6 @@
                             song.current_progress = 100; //we have the song,mark as complete!   
                             song.cssclass = "bg-success"
                             model.songqueue.push(song);
-                            // $("#" + song.id)
-                            //     .css("width", song.current_progress + "%")
-                            //     .addClass("bg-success")
-                            //     .text(song.url + "[ Complete]");
                         }
                         else {
                             //we dont have the song! queue it
@@ -152,9 +148,9 @@
                                 song.interval = setInterval(function () {
                                     $http.get("http://localhost:8002/song/byurl?url=" + '"' + encodeURIComponent(song.url) + '"')
                                         .then(function (response) {
-                                            if (response.data.rows.length > 0) {
+                                            if (response.data.rows.length > 0) { //Check if we now have the song
                                                 song.done = true;
-                                                song.current_progress = 100; //mark as complete!   
+                                                song.current_progress = 100; //we have it, mark as complete!   
                                                 $("#" + song.id)
                                                     .css("width", song.current_progress + "%")
                                                     .addClass("bg-success")
@@ -166,29 +162,23 @@
 
                                     if (!song.done) {
                                         song.current_progress += 5;
-                                        $("#" + song.id) //.css("width", song.current_progress + "%")
+                                        $("#" + song.id)
                                             .attr("aria-valuenow", song.current_progress);
 
                                         if (song.current_progress >= 100) {
                                             clearInterval(song.interval);
-                                            $("#" + song.id) //.css("width", song.current_progress + "%")
+                                            $("#" + song.id)
                                                 .addClass("bg-danger")
                                                 .text(song.url + " [Timed out waiting for download]");
                                         }
-
                                     }
-
                                 }, song.timeout);
 
                                 model.songqueue.push(song);
                             });
                         }
-
                         $scope.songqueue = model.songqueue;
                     });
-
-
-
 
 
             };
@@ -203,24 +193,6 @@
                 });
         });
 
-    </script>
-
-    <script>
-        // $(document).ready(function () {
-        //     $("button").click(function () {
-        //         var query = $("#inputURL").val()
-        //         if (query != "") {
-
-        //             var song = {url:query};
-        //             model.songqueue.push(song);
-        //             $("#inputURL").val("")
-        //             // $.post("http://localhost:8001/submit/query/" + encodeURIComponent(query), function (data, status) {
-        //             //     $("#inprogress").append(" <li class=\"list-group-item\">" + query + "</li>");
-        //             //     $("#inputURL").val("")
-        //             // });
-        //         }
-        //     });
-        // });
     </script>
 </body>
 
