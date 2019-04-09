@@ -1,4 +1,1 @@
 init the view
-function (doc) {
-  emit(doc._id, doc.metadata);
-}

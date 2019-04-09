@@ -1,0 +1,10 @@
+{
+    "_id": "_design/songlist_view",
+    "_rev": "3-947b12f118952f99b18f7a38976307e0",
+    "views": {
+        "main_songlist": {
+            "map": "function (doc) {\n  emit(doc._id, doc.metadata);\n}"
+        }
+    },
+    "language": "javascript"
+}
