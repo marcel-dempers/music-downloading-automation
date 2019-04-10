@@ -63,27 +63,29 @@
             </tbody>
         </table>
 
-        <div ondragover="allowDrop(event)" ondrop="OnDrop(event)" >
-                <div class="card text-center">
-                    <div class="card-header">
-                        YouTube Description builder
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Drag & Drop a song here</h5>
-                        <p class="card-text">Build a YouTube Description content for the selected song</p>
-                        <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                    </div>
+        <div ondragover="allowDrop(event)" ondrop="OnDrop(event)">
+            <div class="card text-center">
+                <div class="card-header">
+                    YouTube Description builder
                 </div>
-        
-                <div class="card" style="width: 18rem;">
-                        <div class="card-header">
-                          Songs
-                        </div>
-                        <ul class="list-group list-group-flush">
-                          <li ng-repeat="d in songdescriptions" class="list-group-item">{{ d.value.artist }}-{{ d.value.title}}-{{ d.value.uploader }}</li>
-                        </ul>
-                      </div>
+                <div class="card-body">
+                    <h5 class="card-title">Drag & Drop a song here</h5>
+                    <p class="card-text">Build a YouTube Description content for the selected song</p>
+                    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                </div>
             </div>
+        
+            <div class="card">
+                <div class="card-header">
+                    Songs
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li ng-repeat="d in songdescriptions" class="list-group-item">
+                        {{ d.description }}
+                    </li>
+                </ul>
+            </div>
+        </div>
 
     </div>
 
@@ -150,7 +152,22 @@
                     }
 
                     if(!songdropped) {
-                        model.songdescriptions.push(model.songlist[i]);
+                        var song = model.songlist[i];
+
+                        //build a description here:
+                        if(song.value.extractor == "youtube") {
+                            if(song.value.license == "ncs") {
+                                song.description = "Track: " + song.value.title;
+                            }
+                        }
+
+                        if(song.value.extractor == "soundcloud") {
+                            song.description = "Track: " + song.value.uploader + " - " + song.value.title;
+                        }
+
+                        song.description = song.description + "\n " + song.value.webpage_url;
+                        
+                        model.songdescriptions.push(song);
 
                     var appElement = document.querySelector('[ng-app=songs]');
                     var $scope = angular.element(appElement).scope();
