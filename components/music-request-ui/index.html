@@ -51,7 +51,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="s in songlist">
+                <tr id="{{ s.id }}" draggable="true" ng-repeat="s in songlist" ondragstart="OnDrag(event)">
                     <td>{{ s.value.uploader }}</td>
                     <td>{{ s.value.artist }}</td>
                     <td>{{ s.value.title }}</td>
@@ -62,8 +62,30 @@
                 </tr>
             </tbody>
         </table>
-    </div>
 
+        <div ondragover="allowDrop(event)" ondrop="OnDrop(event)" >
+                <div class="card text-center">
+                    <div class="card-header">
+                        YouTube Description builder
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Drag & Drop a song here</h5>
+                        <p class="card-text">Build a YouTube Description content for the selected song</p>
+                        <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                    </div>
+                </div>
+        
+                <div class="card" style="width: 18rem;">
+                        <div class="card-header">
+                          Songs
+                        </div>
+                        <ul class="list-group list-group-flush">
+                          <li ng-repeat="d in songdescriptions" class="list-group-item">{{ d.value.artist }}-{{ d.value.title}}-{{ d.value.uploader }}</li>
+                        </ul>
+                      </div>
+            </div>
+
+    </div>
 
     <hr />
     <p>
@@ -106,15 +128,50 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 
     <script>
+        function allowDrop(ev){
+            ev.preventDefault();
+        }
 
+        function OnDrag(ev){
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function OnDrop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+
+            for (i = 0; i < model.songlist.length; ++i) {
+                if ( model.songlist[i].id == data) {
+                    var songdropped = false;
+                    for (d = 0; d < model.songdescriptions.length; d++){
+                        if ( model.songdescriptions[d].id == data) {
+                            songdropped = true;
+                        }
+                    }
+
+                    if(!songdropped) {
+                        model.songdescriptions.push(model.songlist[i]);
+
+                    var appElement = document.querySelector('[ng-app=songs]');
+                    var $scope = angular.element(appElement).scope();
+                    $scope.$apply(function() {
+                        $scope.songdescriptions = model.songdescriptions;
+                    });
+                    }
+                    
+                }
+            }
+        }
         var model = {
             songlist: [],
-            songqueue: []
+            songqueue: [],
+            songdescriptions: []
         };
 
         var app = angular.module('songs', []);
         app.controller('songsController', function ($scope, $http) {
 
+            $scope.songdescriptions = model.songdescriptions;
             $scope.AddItem = function () {
                 var query = $("#inputURL").val();
                 $("#inputURL").val("");
@@ -192,6 +249,7 @@
                     $scope.songlist = response.data.rows;
                 });
         });
+
 
     </script>
 </body>

@@ -23,7 +23,7 @@ services:
     image: aimvector/music-request-ui:0.0.1
     build: ./components/music-request-ui
     ports:
-      - 8000:80    
+      - 8000:80
   music-request-api:
     container_name: music-request-api
     image: aimvector/music-request-api:0.0.1
