@@ -70,29 +70,42 @@
             </table>
         </div>
 
-        <div ondragover="allowDrop(event)" ondrop="OnDrop(event)">
-            <div class="card text-center">
-                <div class="card-header">
-                    YouTube Description builder
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    
+                    <div ondragover="allowDrop(event)" ondrop="OnDrop(event)">
+                        <div class="card text-center">
+                            <div class="card-header">
+                                YouTube Description builder
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Drag & Drop a song here</h5>
+                                <p class="card-text">Build a YouTube Description content for the selected song</p>
+                                <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                            </div>
+                        </div>                        
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">Drag & Drop a song here</h5>
-                    <p class="card-text">Build a YouTube Description content for the selected song</p>
-                    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                </div>
-            </div>
+                <div class="col">
+                        <div class="card">
+                                <div class="card-header">
+                                    Songs
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li ng-repeat="d in songdescriptions" class="list-group-item">
+                                        {{ d.description_l1 }} <br/>
+                                        {{ d.description_l2 }} <br/>
+                                        {{ d.description_l3 }} <br/>
 
-            <div class="card">
-                <div class="card-header">
-                    Songs
+                                    </li>
+                                </ul>
+                            </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li ng-repeat="d in songdescriptions" class="list-group-item">
-                        {{ d.description }}
-                    </li>
-                </ul>
             </div>
         </div>
+
+        
 
     </div>
 
@@ -163,16 +176,26 @@
 
                         //build a description here:
                         if (song.value.extractor == "youtube") {
+
+                            //Youtube NCS
                             if (song.value.license == "ncs") {
-                                song.description = "Track: " + song.value.title;
+                                song.description_l1 = "Track: " + song.value.title + "\n";
+                                song.description_l2 = "Music provided by NoCopyrightSounds."
+                                song.description_l3 = "Watch: " + song.value.webpage_url;
+                            }
+                            else {
+                                //Youtube default
+                                song.description_l1 = "Track: " + song.value.title + "\n";
+                                song.description_l2 = "Watch: " + song.value.webpage_url;
                             }
                         }
 
                         if (song.value.extractor == "soundcloud") {
-                            song.description = "Track: " + song.value.uploader + " - " + song.value.title;
+                            song.description_l1 = "Track: " + song.value.uploader + " - " + song.value.title;
+                            song.description_l2 = "Watch: " + song.value.webpage_url;
                         }
 
-                        song.description = song.description + "\n " + song.value.webpage_url;
+                        
 
                         model.songdescriptions.push(song);
 
