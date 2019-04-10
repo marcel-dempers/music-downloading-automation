@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="./bootstrap.min.css">
     <title>Music Finder UI</title>
 </head>
 
@@ -16,17 +17,21 @@
         <div class="container" style="padding-top:10px;">
             <form>
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="col">
+                        <img src="./musicicon.png" class="img-fluid rounded" alt="..." style="width:50px; height:50px;">
+                    </div>
+                    <div class="col">
+
                         <label for="musicurl" class="sr-only">Music Request URL</label>
                         <input type="text" readonly class="form-control-plaintext" id="musicurl"
                             value="Music Request URL">
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="col-6">
                         <label for="URL" class="sr-only">URL</label>
                         <input type="text" class="form-control" id="inputURL"
                             placeholder="https://[youtube/soundcloud].com\some-song">
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="col">
                         <button ng-click="AddItem()" id="sendtoqueue" type="button" class="btn btn-primary mb-2">Send to
                             Queue</button>
                     </div>
@@ -36,32 +41,34 @@
 
         <div>
             <div style="margin-bottom: 5px;" class="progress" ng-repeat="q in songqueue">
-                <div id="{{ q.id }}" class="progress-bar progress-bar-striped progress-bar-animated {{ q.cssclass }}" role="progressbar"
-                    style="width: {{ q.current_progress }}%;">{{ q.url }}</div>
+                <div id="{{ q.id }}" class="progress-bar progress-bar-striped progress-bar-animated {{ q.cssclass }}"
+                    role="progressbar" style="width: {{ q.current_progress }}%;">{{ q.url }}</div>
             </div>
         </div>
 
-        <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <th>Uploader</th>
-                    <th>Artist</th>
-                    <th>Title</th>
-                    <th>URL</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr id="{{ s.id }}" draggable="true" ng-repeat="s in songlist" ondragstart="OnDrag(event)">
-                    <td>{{ s.value.uploader }}</td>
-                    <td>{{ s.value.artist }}</td>
-                    <td>{{ s.value.title }}</td>
-                    <td> <a target="_blank" href="{{ s.value.webpage_url }}">{{ s.value.webpage_url }}</a> </td>
-                    <td><a class="btn btn-primary" target="_blank"
-                            href="{{ 'http://localhost:5984/mydatabase/' + s.id + '/' + s.value.filename }}"
-                            role="button">Download Wav</a></td>
-                </tr>
-            </tbody>
-        </table>
+        <div style="overflow:auto;height: 600px;">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Uploader</th>
+                        <th>Artist</th>
+                        <th>Title</th>
+                        <th>URL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="{{ s.id }}" draggable="true" ng-repeat="s in songlist" ondragstart="OnDrag(event)">
+                        <td>{{ s.value.uploader }}</td>
+                        <td>{{ s.value.artist }}</td>
+                        <td>{{ s.value.title }}</td>
+                        <td> <a target="_blank" href="{{ s.value.webpage_url }}">{{ s.value.webpage_url }}</a> </td>
+                        <td><a class="btn btn-primary" target="_blank"
+                                href="{{ 'http://localhost:5984/mydatabase/' + s.id + '/' + s.value.filename }}"
+                                role="button">Download Wav</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <div ondragover="allowDrop(event)" ondrop="OnDrop(event)">
             <div class="card text-center">
@@ -74,7 +81,7 @@
                     <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
                 </div>
             </div>
-        
+
             <div class="card">
                 <div class="card-header">
                     Songs
@@ -130,11 +137,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 
     <script>
-        function allowDrop(ev){
+        function allowDrop(ev) {
             ev.preventDefault();
         }
 
-        function OnDrag(ev){
+        function OnDrag(ev) {
             ev.dataTransfer.setData("text", ev.target.id);
         }
 
@@ -143,39 +150,39 @@
             var data = ev.dataTransfer.getData("text");
 
             for (i = 0; i < model.songlist.length; ++i) {
-                if ( model.songlist[i].id == data) {
+                if (model.songlist[i].id == data) {
                     var songdropped = false;
-                    for (d = 0; d < model.songdescriptions.length; d++){
-                        if ( model.songdescriptions[d].id == data) {
+                    for (d = 0; d < model.songdescriptions.length; d++) {
+                        if (model.songdescriptions[d].id == data) {
                             songdropped = true;
                         }
                     }
 
-                    if(!songdropped) {
+                    if (!songdropped) {
                         var song = model.songlist[i];
 
                         //build a description here:
-                        if(song.value.extractor == "youtube") {
-                            if(song.value.license == "ncs") {
+                        if (song.value.extractor == "youtube") {
+                            if (song.value.license == "ncs") {
                                 song.description = "Track: " + song.value.title;
                             }
                         }
 
-                        if(song.value.extractor == "soundcloud") {
+                        if (song.value.extractor == "soundcloud") {
                             song.description = "Track: " + song.value.uploader + " - " + song.value.title;
                         }
 
                         song.description = song.description + "\n " + song.value.webpage_url;
-                        
+
                         model.songdescriptions.push(song);
 
-                    var appElement = document.querySelector('[ng-app=songs]');
-                    var $scope = angular.element(appElement).scope();
-                    $scope.$apply(function() {
-                        $scope.songdescriptions = model.songdescriptions;
-                    });
+                        var appElement = document.querySelector('[ng-app=songs]');
+                        var $scope = angular.element(appElement).scope();
+                        $scope.$apply(function () {
+                            $scope.songdescriptions = model.songdescriptions;
+                        });
                     }
-                    
+
                 }
             }
         }

@@ -5,3 +5,5 @@ copy ./nginx.conf /etc/nginx/nginx.conf
 
 #content
 copy ./*.html /usr/share/nginx/html/
+copy ./*.css /usr/share/nginx/html/
+copy ./*.png /usr/share/nginx/html/
