@@ -3,9 +3,8 @@
 
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="./bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.5.3/plyr.css" />
     <title>Music Finder UI</title>
 </head>
 
@@ -62,16 +61,42 @@
                         <td>{{ s.value.artist }}</td>
                         <td>{{ s.value.title }}</td>
                         <td> <a target="_blank" href="{{ s.value.webpage_url }}">{{ s.value.webpage_url }}</a> </td>
-                        <td><a class="btn btn-primary" target="_blank"
+                         <td><a class="btn btn-primary" target="_blank"
                                 href="{{ 'http://localhost:5984/mydatabase/' + s.id + '/' + s.value.filename }}"
-                                role="button">Download Wav</a></td>
+                                role="button">Download Wav</a> 
+                                
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        
+        <div class="container" style="margin: 75px auto;max-width: 500px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+                <audio crossorigin playsinline>
+                    <source src="https://cdn.plyr.io/static/demo/Kishi_Bashi_-_It_All_Began_With_a_Burst.mp3" type="audio/mp3">
+                    <source src="https://cdn.plyr.io/static/demo/Kishi_Bashi_-_It_All_Began_With_a_Burst.ogg" type="audio/ogg">
+                </audio>
+            </div>
+
         <div class="container">
             <div class="row">
+                    <div class="col-5">
+                           
+                        <div class="card">
+                            <div class="card-header">
+                               Song Player
+                            </div>
+                             <div>
+                                <audio id="player" controls>
+                                        <!-- <source src="http://localhost:5984/mydatabase/Tm9Db3B5cmlnaHRTb3VuZHNDa0M1aWdlVl90TQ==/Alex%20Skrindo%20&%20Miza%20-%20Thinkin'%20[NCS%20Release].wav" type="audio/wav" />
+                                        <source src="http://localhost:5984/mydatabase/Tm9Db3B5cmlnaHRTb3VuZHNDa0M1aWdlVl90TQ==/Alex%20Skrindo%20&%20Miza%20-%20Thinkin'%20[NCS%20Release].wav" type="audio/wav" /> -->
+                                </audio>
+                             </div>
+                        </div>
+                           
+                    </div>
+
                 <div class="col">
                     
                     <div ondragover="allowDrop(event)" ondrop="OnDrop(event)">
@@ -102,6 +127,7 @@
                                 </ul>
                             </div>
                 </div>
+
             </div>
         </div>
 
@@ -148,6 +174,8 @@
         crossorigin="anonymous"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <script src="https://cdn.plyr.io/3.5.3/plyr.js"></script>
 
     <script>
         function allowDrop(ev) {
@@ -305,7 +333,8 @@
                 });
         });
 
-
+        const player = new Plyr('#player');
+    
     </script>
 </body>
 
