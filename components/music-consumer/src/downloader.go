@@ -35,7 +35,7 @@ func ProcessMessage(message models.Message) (err error) {
 		line := scanner.Text()
 		fmt.Println(line)
 
-		if strings.Contains(line, "[ffmpeg] Destination") && strings.Contains(line, ".wav") {
+		if (strings.Contains(line, "[ffmpeg] Destination") && strings.Contains(line, ".wav")) || (strings.Contains(line, "[download] Destination") && strings.Contains(line, ".wav")){
 			fmt.Println("Finding downloaded file on outputline: " + line)
 
 			re := regexp.MustCompile(`\w*\/.*(?=\.)`)
