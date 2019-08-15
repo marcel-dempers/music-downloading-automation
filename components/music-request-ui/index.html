@@ -219,8 +219,13 @@
                         }
 
                         if (song.value.extractor == "soundcloud") {
+                            
+                            //creative commons support
+                            if(song.value.license == "cc-by") {
+                                song.description_l1 = "Track: " + song.value.uploader + " - " + song.value.title + " | is licensed under a Creative Commons Attribution licence (https://creativecommons.org/licenses/by/3.0/)";
+                                song.description_l2 = "Listen: " + song.value.webpage_url;
 
-                            if (song.value.uploader == "NCS") {
+                            } else if(song.value.uploader == "NCS"){
                                 song.description_l1 = "Track: " + song.value.title;
                                 song.description_l2 = "Music provided by NoCopyrightSounds."
                                 song.description_l3 = "Watch: " + song.value.webpage_url;
@@ -228,7 +233,6 @@
                                 song.description_l1 = "Track: " + song.value.uploader + " - " + song.value.title;
                                 song.description_l2 = "Watch: " + song.value.webpage_url;
                             }
-                            
                         }
 
                         

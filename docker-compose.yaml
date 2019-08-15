@@ -30,6 +30,8 @@ services:
     build: ./components/music-request-api
     volumes:
       - ./components/music-request-api/config.json:/app/configs/config.json
+    environment:
+      - "ENVIRONMENT=DEBUG"
     ports:
       - 8001:10010
   music-consumer:
