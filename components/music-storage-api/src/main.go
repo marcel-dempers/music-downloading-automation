@@ -6,9 +6,20 @@ import (
 	log "github.com/sirupsen/logrus"
 	"app/models"
 	"fmt"
+	"os"
 )
 
 var config *models.Configuration 
+var environment = os.Getenv("ENVIRONMENT")
+
+func cors(writer http.ResponseWriter) () {
+	if(environment == "DEBUG"){
+		writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With, X-MY-API-Version")
+		writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		writer.Header().Set("Access-Control-Allow-Origin", "*")
+	}
+}
 
 func main() {
 	c := GetConfiguration()
@@ -22,6 +33,7 @@ func main() {
 			http.Error(w, err.Error(), 500)
 		}
 
+		cors(w)
 		fmt.Fprintf(w, "%s", songs)
 	})
 
@@ -30,7 +42,7 @@ func main() {
 		if(err != nil){
 			http.Error(w, err.Error(), 500)
 		}
-
+		cors(w)
 		fmt.Fprintf(w, "%s", songs)
 	})
 
@@ -39,7 +51,7 @@ func main() {
 		if(err != nil){
 			http.Error(w, err.Error(), 500)
 		}
-
+		cors(w)
 		fmt.Fprintf(w, "%s", songs)
 	})
 

@@ -43,6 +43,8 @@ services:
     container_name: music-storage-api
     image: aimvector/music-storage-api:0.0.1
     build: ./components/music-storage-api
+    environment:
+      - "ENVIRONMENT=DEBUG"
     ports:
       - 8002:10010
     volumes:
