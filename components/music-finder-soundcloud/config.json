@@ -1,0 +1,19 @@
+{
+    "Test" : [
+        {
+            "Name" : "blah"
+        }
+    ],
+
+    "RabbitMq" : {
+        "Host" : "music-queue",
+        "Port" : 5672,
+        "Username" : "user",
+        "Password" : "password"
+    },
+
+    "Soundcloud" : {
+        "ApiURL" : "https://api.soundcloud.com",
+        "ClientID" : "XXXXXXXXXXXXXXXXXX"
+    }
+}

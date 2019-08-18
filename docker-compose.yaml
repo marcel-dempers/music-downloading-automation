@@ -24,6 +24,16 @@ services:
     build: ./components/music-request-ui
     ports:
       - 8000:80
+  music-finder-soundcloud:
+    container_name: music-finder-soundcloud
+    image: aimvector/music-finder-soundcloud:0.0.1
+    build: ./components/music-finder-soundcloud
+    volumes:
+      - ./components/music-finder-soundcloud/config.json:/app/configs/config.json
+    environment:
+      - "ENVIRONMENT=DEBUG"
+    ports:
+      - 8003:10010
   music-request-api:
     container_name: music-request-api
     image: aimvector/music-request-api:0.0.1
