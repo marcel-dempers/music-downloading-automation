@@ -13,19 +13,17 @@ func FindSong(writer http.ResponseWriter, request *http.Request, p httprouter.Pa
 
 	count := p.ByName("count")
 	depth := p.ByName("depth")
-	query := p.ByName("query")
+	trackID := p.ByName("trackid")
 	
-	query = query[1:]
-	//query/http://blah.test.com/test/blah
-	fmt.Println("Received: " + query)
+	//trackID = trackID[1:]
+	//trackID/http://blah.test.com/test/blah
+	fmt.Println("Received: " + trackID)
 	fmt.Println("Count: " + count)
 	fmt.Println("Depth: " + depth)
 	
-	if query == "" {
-		return errors.New("Expeced query parameter")
+	if trackID == "" {
+		return errors.New("Expeced trackID parameter")
 	}
-
-	var trackID = "353521499"
 
 	trackList , err := sc_client.GetRelatedTracks(trackID)
 

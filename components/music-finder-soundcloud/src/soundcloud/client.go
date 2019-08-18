@@ -11,7 +11,7 @@ import (
 
 type Track struct {
 	Id int
-	Permanentlink_url string
+	PermanentUrl string `json:"permalink_url"`
 	License string
 }
 
