@@ -221,7 +221,7 @@
                         if (song.value.extractor == "soundcloud") {
                             
                             //creative commons support
-                            if(song.value.license == "cc-by") {
+                            if(song.value.license == "cc-by" || song.value.license == "cc-by-nc-sa") {
                                 song.description_l1 = "Track: " + song.value.uploader + " - " + song.value.title + " | is licensed under a Creative Commons Attribution licence (https://creativecommons.org/licenses/by/3.0/)";
                                 song.description_l2 = "Listen: " + song.value.webpage_url;
 
@@ -231,7 +231,7 @@
                                 song.description_l3 = "Watch: " + song.value.webpage_url;
                             }else {
                                 song.description_l1 = "Track: " + song.value.uploader + " - " + song.value.title;
-                                song.description_l2 = "Watch: " + song.value.webpage_url;
+                                song.description_l2 = "Listen: " + song.value.webpage_url;
                             }
                         }
 
