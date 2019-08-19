@@ -31,7 +31,7 @@ func main() {
 
 	router := httprouter.New()
 
-	router.POST("/find/:count/:depth/:trackid", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
+	router.POST("/find/:count/:depth/*trackurl", func(w http.ResponseWriter, r *http.Request, p httprouter.Params){
 		cors(w) 
 		err := FindSong(w,r,p,config)
 

@@ -9,24 +9,23 @@ import (
 )
 
 func FindSong(writer http.ResponseWriter, request *http.Request, p httprouter.Params, config models.Configuration) (err error) {
-	fmt.Println("Submitting request to queue")
-
 	count := p.ByName("count")
 	depth := p.ByName("depth")
-	trackID := p.ByName("trackid")
+	trackUrl := p.ByName("trackurl")
 	
 	//trackID = trackID[1:]
 	//trackID/http://blah.test.com/test/blah
-	fmt.Println("Received: " + trackID)
+	fmt.Println("Received: " + trackUrl)
 	fmt.Println("Count: " + count)
 	fmt.Println("Depth: " + depth)
 	
-	if trackID == "" {
-		return errors.New("Expeced trackID parameter")
+	if trackUrl == "" {
+		return errors.New("Expeced trackUrl parameter")
 	}
 
-	trackList , err := sc_client.GetRelatedTracks(trackID)
-
+	//var url = "https%3A%2F%2Fsoundcloud.com%2Fmsmrsounds%2Fms-mr-hurricane-chvrches-remix"
+	trackList , err := sc_client.GetRelatedTracksByUrl(trackUrl)
+	// trackid , err := sc_client.GetTrackIdFromUrl(url)
 	if err != nil {
 		panic(err)
 	}
@@ -35,3 +34,4 @@ func FindSong(writer http.ResponseWriter, request *http.Request, p httprouter.Pa
 
 	return err
 }
+

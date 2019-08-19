@@ -7,12 +7,20 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"strings"
+	"strconv"
+	"fmt"
+	"net/url"
 )
 
 type Track struct {
 	Id int
 	PermanentUrl string `json:"permalink_url"`
 	License string
+}
+
+type Resolve struct {
+	Location string 
+	Status string 
 }
 
 type Client struct {
@@ -33,9 +41,61 @@ func(sc *Client) Init(config models.Configuration) *Client {
 	return sc
 }
 
-func (sc *Client) GetRelatedTracks(id string) (trackList []Track, err error){
+func (sc *Client)  GetTrackIdFromUrl(httpUrl string) (trackid int, err error) {
+	
+	fmt.Printf("httpUrl: %v\n", httpUrl)
 
-	req, err := http.NewRequest("GET", sc.ApiUrl + "/tracks/" + id + "/related?" + "client_id=" + sc.ClientID, nil)
+	u, err := url.Parse(httpUrl)
+	
+	if err != nil {
+		panic(err)
+		return
+	}
+
+	fmt.Printf("escaped httpUrl: %v\n", u.String())
+
+	req, err := http.NewRequest("GET", sc.ApiUrl + "/resolve.json?url=" + httpUrl + "&" + "client_id=" + sc.ClientID, nil)
+	resp, err := sc.HttpClient.Do(req)
+
+	trackid = 0
+	var track *Track
+	
+	if err != nil {
+		return trackid, err
+	}
+	if resp != nil {
+		defer resp.Body.Close()
+		
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return trackid, err
+		}
+
+		err = json.Unmarshal(bodyBytes, &track)
+		
+		if err != nil {
+			return trackid, err
+		}
+		fmt.Printf("found track: %v\n", track)
+		return track.Id, err
+	}
+
+	return trackid, nil
+}
+
+func (sc *Client) GetRelatedTracksByUrl(httpUrl string) (trackList []Track, err error) {
+	trackid, err := sc.GetTrackIdFromUrl(httpUrl)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return sc.GetRelatedTracksByID(trackid)	
+}
+
+func (sc *Client) GetRelatedTracksByID(id int) (trackList []Track, err error){
+
+	req, err := http.NewRequest("GET", sc.ApiUrl + "/tracks/" + strconv.Itoa(id) + "/related?" + "client_id=" + sc.ClientID, nil)
 	resp, err := sc.HttpClient.Do(req)
 
 	if err != nil {
