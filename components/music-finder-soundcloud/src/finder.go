@@ -13,6 +13,7 @@ func FindSong(writer http.ResponseWriter, request *http.Request, p httprouter.Pa
 	depth := p.ByName("depth")
 	trackUrl := p.ByName("trackurl")
 	
+	trackUrl = trackUrl[1:]
 	//trackID = trackID[1:]
 	//trackID/http://blah.test.com/test/blah
 	fmt.Println("Received: " + trackUrl)
