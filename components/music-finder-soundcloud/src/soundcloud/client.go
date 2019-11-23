@@ -115,7 +115,7 @@ func (sc *Client) GetRelatedTracksByID(id int) (trackList []Track, err error){
 		}
 
 		filter := func(s Track) bool { 
-			return strings.Contains(s.License,"cc-")
+			return strings.Contains(s.License,"cc-") && !strings.Contains(s.License,"cc-by-nc-sa")
 		}
 		list := filterCCLicense(trackList, filter)
 		
