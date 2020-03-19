@@ -7,7 +7,7 @@ import (
 	"log"
 	"strconv"
 	"time"
-	"app/models"
+	"github.com/music-consumer/models"
 	"encoding/json"
 	 
 )
