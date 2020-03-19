@@ -46,7 +46,7 @@ services:
       - 8001:10010
   music-consumer:
     container_name: music-consumer
-    image: aimvector/music-consumer:0.0.1
+    image: aimvector/music-consumer:0.1.0
     build: ./components/music-consumer
     volumes:
       - ./components/music-consumer/config.json:/app/configs/config.json

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os/exec"
-	"app/models"
+	"github.com/music-consumer/models"
 	"time"
 	"errors"
 	"bytes"

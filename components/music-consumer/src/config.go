@@ -1,7 +1,7 @@
 package main
 
 import (
-	"app/models"
+	"github.com/music-consumer/models"
 	"fmt"
 	"os"
 	"io/ioutil"

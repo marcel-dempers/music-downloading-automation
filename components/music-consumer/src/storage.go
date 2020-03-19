@@ -8,7 +8,7 @@ import (
      _ "github.com/go-kivik/couchdb"
 	"bytes"
 	"io"
-	"app/models"
+	"github.com/music-consumer/models"
 	"io/ioutil"
 	"encoding/json"
 	"encoding/base64"
@@ -109,6 +109,7 @@ func ConnectAndSaveContent(document models.Document, content []byte, metadatafil
 	if rev != "" {
 
 		fmt.Println("Adding attachments..")
+		fmt.Println(rev)
 		rev, err = db.PutAttachment(context.TODO(),id, rev, attachment)
 		if err != nil {
 			panic(err)
